@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Container, VStack, Box, Heading, Divider } from '@chakra-ui/react';
+import { Container, VStack, Box, Heading, Divider, Text, useColorModeValue } from '@chakra-ui/react';
 import { FileUpload } from '@/components/FileUpload';
 import { SessionSelector } from '@/components/SessionSelector';
 import { TimetablePreview } from '@/components/TimetablePreview';
@@ -17,6 +17,8 @@ export default function Home() {
   });
 
   const timetableRef = useRef<HTMLDivElement>(null);
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
 
   const handleFileProcessed = (rows: ProcessedTimetableRow[]) => {
     setTimetableData(prev => ({
@@ -28,55 +30,96 @@ export default function Home() {
   const isTimetableConfigured = timetableData.rows.length > 0 && timetableData.date !== '';
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <Box w="100%" maxW="600px" mx="auto">
-          <FileUpload onFileProcessed={handleFileProcessed} />
-        </Box>
+    <Box minH="100vh" py={10}>
+      <Container maxW="container.xl" py={8}>
+        <VStack spacing={10} align="stretch">
+          <Heading as="h1" size="xl" textAlign="center" className="app-title" fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }}>
+            BSBI Info Screen Timetable
+          </Heading>
+          
+          <Box 
+            w="100%" 
+            maxW="700px" 
+            mx="auto" 
+            p={6} 
+            bg={bgColor} 
+            shadow="xl" 
+            borderRadius="xl" 
+            borderWidth="1px" 
+            borderColor={borderColor}
+          >
+            <Text mb={4} textAlign="center" fontWeight="medium" color="gray.600">
+              Upload your BSBI timetable file to begin formatting
+            </Text>
+            <FileUpload onFileProcessed={handleFileProcessed} />
+          </Box>
 
-        {timetableData.rows.length > 0 && (
-          <>
-            <Divider my={4} />
-            <Heading as="h2" size="md" textAlign="center">Timetable Configuration</Heading>
-            
-            <Box w="100%" maxW="400px" mx="auto">
-              <SessionSelector
-                session={timetableData.session}
-                time={timetableData.time}
-                date={timetableData.date}
-                onSessionChange={(session) =>
-                  setTimetableData(prev => ({ ...prev, session }))
-                }
-                onTimeChange={(time) =>
-                  setTimetableData(prev => ({ ...prev, time }))
-                }
-                onDateChange={(date) =>
-                  setTimetableData(prev => ({ ...prev, date }))
-                }
-              />
-            </Box>
-
-            {isTimetableConfigured && (
-              <>
-                <Divider my={4} />
-                <Heading as="h2" size="md" textAlign="center">Timetable Preview</Heading>
+          {timetableData.rows.length > 0 && (
+            <>
+              <Divider />
+              <Box 
+                w="100%" 
+                maxW="600px" 
+                mx="auto" 
+                p={6} 
+                bg={bgColor} 
+                shadow="lg" 
+                borderRadius="xl" 
+                borderWidth="1px" 
+                borderColor={borderColor}
+              >
+                <Heading as="h2" size="md" textAlign="center" mb={6}>Timetable Configuration</Heading>
                 
-                <TimetablePreview
-                  ref={timetableRef}
-                  data={timetableData}
+                <SessionSelector
+                  session={timetableData.session}
+                  time={timetableData.time}
+                  date={timetableData.date}
+                  onSessionChange={(session) =>
+                    setTimetableData(prev => ({ ...prev, session }))
+                  }
+                  onTimeChange={(time) =>
+                    setTimetableData(prev => ({ ...prev, time }))
+                  }
+                  onDateChange={(date) =>
+                    setTimetableData(prev => ({ ...prev, date }))
+                  }
                 />
+              </Box>
 
-                <Box textAlign="center" mt={4}>
-                  <DownloadButtons
-                    timetableRef={timetableRef}
-                    data={timetableData}
-                  />
-                </Box>
-              </>
-            )}
-          </>
-        )}
-      </VStack>
-    </Container>
+              {isTimetableConfigured && (
+                <>
+                  <Divider />
+                  <Box 
+                    w="100%" 
+                    maxW="container.lg" 
+                    mx="auto" 
+                    p={6} 
+                    bg={bgColor} 
+                    shadow="lg" 
+                    borderRadius="xl" 
+                    borderWidth="1px" 
+                    borderColor={borderColor}
+                  >
+                    <Heading as="h2" size="md" textAlign="center" mb={6}>Timetable Preview</Heading>
+                    
+                    <TimetablePreview
+                      ref={timetableRef}
+                      data={timetableData}
+                    />
+
+                    <Box textAlign="center" mt={8}>
+                      <DownloadButtons
+                        timetableRef={timetableRef as React.RefObject<HTMLDivElement>}
+                        data={timetableData}
+                      />
+                    </Box>
+                  </Box>
+                </>
+              )}
+            </>
+          )}
+        </VStack>
+      </Container>
+    </Box>
   );
 } 

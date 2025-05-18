@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback } from 'react';
-import { Box, Button, Text, useToast, VStack } from '@chakra-ui/react';
+import { useCallback, useState } from 'react';
+import { Box, Button, Text, useToast, VStack, Icon, Flex } from '@chakra-ui/react';
 import { useDropzone } from 'react-dropzone';
 import { parseExcelFile } from '@/lib/parseExcel';
 import { ProcessedTimetableRow } from '@/types/timetable';
@@ -12,11 +12,13 @@ interface FileUploadProps {
 
 export const FileUpload: React.FC<FileUploadProps> = ({ onFileProcessed }) => {
   const toast = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
+    setIsProcessing(true);
     try {
       const rows = await parseExcelFile(file);
       onFileProcessed(rows);
@@ -32,6 +34,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileProcessed }) => {
         status: 'error',
         duration: 5000,
       });
+    } finally {
+      setIsProcessing(false);
     }
   }, [onFileProcessed, toast]);
 
@@ -42,6 +46,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileProcessed }) => {
       'application/vnd.ms-excel': ['.xls'],
     },
     maxFiles: 1,
+    disabled: isProcessing,
   });
 
   return (
@@ -49,22 +54,33 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileProcessed }) => {
       {...getRootProps()}
       p={6}
       border="2px dashed"
-      borderColor={isDragActive ? 'blue.400' : 'gray.200'}
+      borderColor={isDragActive ? 'blue.400' : isProcessing ? 'yellow.400' : 'gray.200'}
       borderRadius="lg"
-      bg={isDragActive ? 'blue.50' : 'white'}
-      cursor="pointer"
+      bg={isDragActive ? 'blue.50' : isProcessing ? 'yellow.50' : 'white'}
+      cursor={isProcessing ? 'wait' : 'pointer'}
+      opacity={isProcessing ? 0.7 : 1}
       transition="all 0.2s"
       _hover={{
-        borderColor: 'blue.400',
-        bg: 'blue.50',
+        borderColor: isProcessing ? 'yellow.400' : 'blue.400',
+        bg: isProcessing ? 'yellow.50' : 'blue.50',
       }}
     >
       <input {...getInputProps()} />
       <VStack spacing={2}>
         <Text fontSize="lg" fontWeight="medium">
-          {isDragActive ? 'Drop the file here' : 'Drag & drop your Excel file here'}
+          {isDragActive 
+            ? 'Drop the file here' 
+            : isProcessing 
+              ? 'Processing file...' 
+              : 'Drag & drop your Excel file here'}
         </Text>
-        <Text color="gray.500">or click to select a file</Text>
+        {!isProcessing && (
+          <Text color="gray.500">or click to select a file</Text>
+        )}
+        <Flex direction="column" mt={2} fontSize="sm" color="gray.600" textAlign="center">
+          <Text>Supports both original BSBI timetables</Text>
+          <Text>and previously exported timetables</Text>
+        </Flex>
       </VStack>
     </Box>
   );

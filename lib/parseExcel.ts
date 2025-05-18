@@ -149,28 +149,83 @@ export const cleanProfessorName = (professor: string): string => {
   return professor.replace(/\s*\([^)]*\)/g, '').trim();
 };
 
+// This function parses raw BSBI Excel files with Summary, Room, Staff columns
+export const parseRawExcelFile = (data: Uint8Array): Promise<ProcessedTimetableRow[]> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const workbook = read(data, { type: 'array' });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = utils.sheet_to_json<RawTimetableRow>(firstSheet);
+
+      // Check if this is a raw BSBI Excel file (has Summary, Room, and Staff columns)
+      if (rows.length === 0 || !('Summary' in rows[0])) {
+        reject(new Error('This does not appear to be a raw BSBI Excel file.'));
+        return;
+      }
+
+      const processedRows = rows.map(row => ({
+        program: extractProgram(row.Summary),
+        module: extractModule(row.Summary),
+        intake: extractIntake(row.Summary),
+        professor: cleanProfessorName(row.Staff),
+        room: row.Room,
+      }));
+
+      resolve(processedRows);
+    } catch (error) {
+      reject(new Error('Failed to parse raw BSBI Excel file. Please check the format.'));
+    }
+  });
+};
+
+// This function parses app-exported Excel files with program, module, intake, professor, room columns
+export const parseExportedExcelFile = (data: Uint8Array): Promise<ProcessedTimetableRow[]> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const workbook = read(data, { type: 'array' });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = utils.sheet_to_json<ProcessedTimetableRow>(firstSheet);
+
+      // Check if this is an app-exported Excel file (has all the processed columns)
+      if (rows.length === 0 || !('program' in rows[0])) {
+        reject(new Error('This does not appear to be an app-exported Excel file.'));
+        return;
+      }
+
+      // No need for further processing as the columns already match what we need
+      resolve(rows);
+    } catch (error) {
+      reject(new Error('Failed to parse app-exported Excel file. Please check the format.'));
+    }
+  });
+};
+
 export const parseExcelFile = async (file: File): Promise<ProcessedTimetableRow[]> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = utils.sheet_to_json<RawTimetableRow>(firstSheet);
-
-        const processedRows = rows.map(row => ({
-          program: extractProgram(row.Summary),
-          module: extractModule(row.Summary),
-          intake: extractIntake(row.Summary),
-          professor: cleanProfessorName(row.Staff),
-          room: row.Room,
-        }));
-
-        resolve(processedRows);
+        
+        // Try to parse as raw BSBI Excel file first
+        try {
+          const rows = await parseRawExcelFile(data);
+          resolve(rows);
+          return;
+        } catch (rawError) {
+          // If parsing as raw file fails, try as app-exported file
+          try {
+            const rows = await parseExportedExcelFile(data);
+            resolve(rows);
+            return;
+          } catch (exportedError) {
+            // If both parsing methods fail, throw a more general error
+            reject(new Error('Failed to parse Excel file. Please make sure it\'s either a raw BSBI timetable or an app-exported timetable.'));
+          }
+        }
       } catch (error) {
-        reject(new Error('Failed to parse Excel file. Please make sure it\'s in the correct format.'));
+        reject(new Error('Failed to read the Excel file. Please try again.'));
       }
     };
 

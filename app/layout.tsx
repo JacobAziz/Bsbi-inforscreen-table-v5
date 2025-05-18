@@ -2,7 +2,7 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata = {
-  title: 'BSBI Timetable Formatter',
+  title: 'BSBI Info Screen Timetable',
   description: 'Transform BSBI timetables into beautiful, presentable formats',
 };
 

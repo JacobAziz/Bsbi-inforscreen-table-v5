@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Button, HStack, useToast } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Button, HStack, useToast, Tooltip, Text, VStack } from '@chakra-ui/react';
 import { toPng } from 'html-to-image';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { utils, write } from 'xlsx';
@@ -17,16 +17,18 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
   data,
 }) => {
   const toast = useToast();
+  const [isDownloading, setIsDownloading] = useState<'png' | 'pdf' | 'excel' | null>(null);
 
   const downloadAsPNG = async () => {
     if (!timetableRef.current) return;
     
+    setIsDownloading('png');
     try {
       const dataUrl = await toPng(timetableRef.current, {
         quality: 1.0,
         pixelRatio: 2,
         cacheBust: true,
-        imagePlaceholder: '/images/bsbi-logo.png',
+        imagePlaceholder: '/images/BSBI-Logo.png',
         fetchRequestInit: { cache: 'no-cache' },
       });
       
@@ -47,33 +49,59 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         status: 'error',
         duration: 5000,
       });
+    } finally {
+      setIsDownloading(null);
     }
   };
 
   const downloadAsPDF = async () => {
     if (!timetableRef.current) return;
 
+    setIsDownloading('pdf');
     try {
       const dataUrl = await toPng(timetableRef.current, {
         quality: 1.0,
-        pixelRatio: 2,
+        pixelRatio: 3,
         cacheBust: true,
-        imagePlaceholder: '/images/bsbi-logo.png',
+        canvasWidth: timetableRef.current.scrollWidth,
+        canvasHeight: timetableRef.current.scrollHeight,
+        imagePlaceholder: '/images/BSBI-Logo.png',
         fetchRequestInit: { cache: 'no-cache' },
       });
       
       const imageBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
       
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([842, 595]); // A4 landscape
+      
+      const timetableWidth = timetableRef.current.scrollWidth;
+      const timetableHeight = timetableRef.current.scrollHeight;
+      
+      const pageWidth = 842;
+      const pageHeight = Math.floor((pageWidth / timetableWidth) * timetableHeight);
+      
+      const page = pdfDoc.addPage([pageWidth, pageHeight]);
       const image = await pdfDoc.embedPng(imageBytes);
       
-      const { width, height } = image.scale(0.8);
+      const margin = 20;
+      const maxWidth = pageWidth - (margin * 2);
+      const maxHeight = pageHeight - (margin * 2);
+      
+      const scale = Math.min(
+        maxWidth / image.width,
+        maxHeight / image.height
+      );
+      
+      const scaledWidth = image.width * scale;
+      const scaledHeight = image.height * scale;
+      
+      const x = (pageWidth - scaledWidth) / 2;
+      const y = (pageHeight - scaledHeight) / 2;
+      
       page.drawImage(image, {
-        x: (842 - width) / 2,
-        y: (595 - height) / 2,
-        width,
-        height,
+        x,
+        y,
+        width: scaledWidth,
+        height: scaledHeight,
       });
       
       const pdfBytes = await pdfDoc.save();
@@ -97,10 +125,13 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         status: 'error',
         duration: 5000,
       });
+    } finally {
+      setIsDownloading(null);
     }
   };
 
   const downloadAsExcel = () => {
+    setIsDownloading('excel');
     try {
       const worksheet = utils.json_to_sheet(data.rows);
       const workbook = utils.book_new();
@@ -124,8 +155,9 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
 
       toast({
         title: 'Excel file downloaded successfully',
+        description: 'You can edit this file and re-upload it to the app',
         status: 'success',
-        duration: 3000,
+        duration: 4000,
       });
     } catch (error) {
       toast({
@@ -134,20 +166,48 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         status: 'error',
         duration: 5000,
       });
+    } finally {
+      setIsDownloading(null);
     }
   };
 
   return (
-    <HStack spacing={4}>
-      <Button colorScheme="blue" onClick={downloadAsPNG}>
-        Download PNG
-      </Button>
-      <Button colorScheme="green" onClick={downloadAsPDF}>
-        Download PDF
-      </Button>
-      <Button colorScheme="teal" onClick={downloadAsExcel}>
-        Download Excel
-      </Button>
-    </HStack>
+    <VStack spacing={4}>
+      <HStack spacing={4}>
+        <Button 
+          colorScheme="blue" 
+          onClick={downloadAsPNG}
+          isLoading={isDownloading === 'png'}
+          loadingText="Downloading"
+        >
+          Download PNG
+        </Button>
+        <Button 
+          colorScheme="green" 
+          onClick={downloadAsPDF}
+          isLoading={isDownloading === 'pdf'}
+          loadingText="Downloading"
+        >
+          Download PDF
+        </Button>
+        <Tooltip 
+          label="You can edit this Excel file and re-upload it to create new PDFs/PNGs" 
+          hasArrow 
+          placement="top"
+        >
+          <Button 
+            colorScheme="teal" 
+            onClick={downloadAsExcel}
+            isLoading={isDownloading === 'excel'}
+            loadingText="Downloading"
+          >
+            Download Excel
+          </Button>
+        </Tooltip>
+      </HStack>
+      <Text fontSize="sm" color="gray.600">
+        Pro tip: Download Excel, make changes, then re-upload to create a new PDF or PNG
+      </Text>
+    </VStack>
   );
 }; 
