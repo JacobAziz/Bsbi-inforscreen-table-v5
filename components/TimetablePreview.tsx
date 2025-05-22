@@ -80,7 +80,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         className="timetable-container"
       >
         {/* Header section with date, logo, session info */}
-        <Box py={1} px={8} mb={-2}>
+        <Box py={1} px={8} mb={0}>
           <Flex justify="space-between" align="center">
             {/* Left - Date */}
             <Flex direction="column" textAlign="left" width="25%">
@@ -93,7 +93,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
             </Flex>
             
             {/* Center - Logo */}
-            <Center width="50%" my={-4} position="relative" zIndex={1} overflow="visible">
+            <Center width="50%" my={0} position="relative" zIndex={1} overflow="visible">
               {logoError ? (
                 <Text fontSize="5xl" fontWeight="bold" color="white">
                   BSBI
@@ -102,7 +102,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
                 <Image 
                   src="/images/BSBI-Logo.png" 
                   alt="BSBI Logo" 
-                  height={["170px", "230px", "300px"]} 
+                  height={["150px", "180px", "200px"]} 
                   width="auto"
                   objectFit="contain"
                   filter={isLightBackground ? "none" : "brightness(0) invert(1)"}
@@ -124,7 +124,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         </Box>
         
         {/* Horizontal divider between header and table */}
-        <Box px={6} my={0}>
+        <Box px={6} my={1}>
           <Divider 
             borderWidth="2px" 
             borderColor={isLightBackground ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)"} 
@@ -133,7 +133,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         </Box>
 
         {/* Timetable section */}
-        <Box px={6} pb={6} pt={0}>
+        <Box px={6} pb={6} pt={2}>
           {/* Header Row */}
           <Grid 
             templateColumns={gridTemplateColumns}
