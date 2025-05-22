@@ -46,6 +46,19 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
+        // Fix for logo aspect ratio preservation
+        const logoImgs = clone.querySelectorAll('img');
+        logoImgs.forEach(img => {
+          img.style.width = 'auto';
+          img.style.height = 'auto';
+          img.style.maxHeight = '300px';
+          img.style.maxWidth = '300px';
+          img.style.objectFit = 'contain';
+          img.style.aspectRatio = '1 / 1';
+          img.style.transform = 'none';
+          img.style.scale = '1';
+        });
+        
         tempDiv.appendChild(clone);
         
         // Capture the image with exact dimensions
@@ -80,8 +93,13 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
             const contentHeight = Math.min(img.height, infoScreenHeight);
             const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
             
+            // Preserve aspect ratio when drawing the image
+            const aspectRatio = img.width / img.height;
+            const drawWidth = infoScreenWidth;
+            const drawHeight = drawWidth / aspectRatio;
+            
             // Draw the image centered on the canvas
-            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
+            ctx.drawImage(img, 0, yPos, drawWidth, drawHeight);
             
             // Create download link
             const finalDataUrl = canvas.toDataURL('image/png');
@@ -157,6 +175,19 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
+        // Fix for logo aspect ratio preservation
+        const logoImgs = clone.querySelectorAll('img');
+        logoImgs.forEach(img => {
+          img.style.width = 'auto';
+          img.style.height = 'auto';
+          img.style.maxHeight = '300px';
+          img.style.maxWidth = '300px';
+          img.style.objectFit = 'contain';
+          img.style.aspectRatio = '1 / 1';
+          img.style.transform = 'none';
+          img.style.scale = '1';
+        });
+        
         tempDiv.appendChild(clone);
         
         // Capture the image with exact dimensions
@@ -191,11 +222,16 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
             const contentHeight = Math.min(img.height, infoScreenHeight);
             const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
             
+            // Preserve aspect ratio when drawing the image
+            const aspectRatio = img.width / img.height;
+            const drawWidth = infoScreenWidth;
+            const drawHeight = drawWidth / aspectRatio;
+            
             // Draw the image centered on the canvas
-            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
+            ctx.drawImage(img, 0, yPos, drawWidth, drawHeight);
             
             // Create download link
-            const finalDataUrl = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG format with 90% quality
+            const finalDataUrl = canvas.toDataURL('image/jpeg', 0.95); // Increased quality to 95%
             const link = document.createElement('a');
             link.download = `timetable-${data.session.toLowerCase()}-${data.date}.jpg`;
             link.href = finalDataUrl;
