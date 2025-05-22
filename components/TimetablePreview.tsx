@@ -93,7 +93,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
             </Flex>
             
             {/* Center - Logo */}
-            <Center width="50%" my={0} position="relative" zIndex={1} overflow="visible">
+            <Center width="50%" my={0} position="relative" zIndex={1} overflow="visible" className="logo-container">
               {logoError ? (
                 <Text fontSize="5xl" fontWeight="bold" color="white">
                   BSBI
@@ -145,6 +145,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
             letterSpacing="wider"
             p={0}
             mb={0}
+            className="timetable-header"
           >
             <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
               Program

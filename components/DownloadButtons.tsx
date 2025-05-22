@@ -46,32 +46,34 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
-        // Fix for logo aspect ratio preservation with increased size
-        const logoImgs = clone.querySelectorAll('img');
-        logoImgs.forEach(img => {
-          // Target logo specifically
-          if (img.src.includes('BSBI-Logo')) {
-            img.style.width = '500px'; // Increased from auto
-            img.style.height = '500px'; // Increased from auto
-            img.style.maxHeight = '500px'; // Increased from 300px
-            img.style.maxWidth = '500px'; // Increased from 300px
-            img.style.minHeight = '500px'; // Added to ensure minimum size
-            img.style.minWidth = '500px'; // Added to ensure minimum size
-            img.style.objectFit = 'contain';
-            img.style.aspectRatio = '1 / 1';
-            img.style.transform = 'none';
-            img.style.scale = '1';
-            
-            // Center the logo better
-            const logoContainer = img.parentElement;
-            if (logoContainer) {
-              logoContainer.style.display = 'flex';
-              logoContainer.style.justifyContent = 'center';
-              logoContainer.style.alignItems = 'center';
-              logoContainer.style.minHeight = '500px';
-            }
-          }
-        });
+        // Fix logo spacing
+        const logoContainer = clone.querySelector('.logo-container') as HTMLElement;
+        if (logoContainer) {
+          logoContainer.style.margin = '0';
+          logoContainer.style.padding = '0';
+        }
+        
+        // Fix Image height to match preview
+        const logoImage = clone.querySelector('img') as HTMLImageElement;
+        if (logoImage) {
+          logoImage.style.height = '200px';
+          logoImage.style.maxHeight = '200px';
+          logoImage.style.marginTop = '0';
+          logoImage.style.marginBottom = '0';
+        }
+        
+        // Ensure divider has proper spacing
+        const divider = clone.querySelector('hr') as HTMLElement;
+        if (divider) {
+          divider.style.marginTop = '4px';
+          divider.style.marginBottom = '4px';
+        }
+        
+        // Ensure table header has proper spacing
+        const tableHeader = clone.querySelector('.timetable-header') as HTMLElement;
+        if (tableHeader) {
+          tableHeader.style.paddingTop = '8px';
+        }
         
         tempDiv.appendChild(clone);
         
@@ -107,13 +109,8 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
             const contentHeight = Math.min(img.height, infoScreenHeight);
             const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
             
-            // Preserve aspect ratio when drawing the image
-            const aspectRatio = img.width / img.height;
-            const drawWidth = infoScreenWidth;
-            const drawHeight = drawWidth / aspectRatio;
-            
             // Draw the image centered on the canvas
-            ctx.drawImage(img, 0, yPos, drawWidth, drawHeight);
+            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
             
             // Create download link
             const finalDataUrl = canvas.toDataURL('image/png');
@@ -189,32 +186,34 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
-        // Fix for logo aspect ratio preservation with increased size
-        const logoImgs = clone.querySelectorAll('img');
-        logoImgs.forEach(img => {
-          // Target logo specifically
-          if (img.src.includes('BSBI-Logo')) {
-            img.style.width = '500px'; // Increased from auto
-            img.style.height = '500px'; // Increased from auto
-            img.style.maxHeight = '500px'; // Increased from 300px
-            img.style.maxWidth = '500px'; // Increased from 300px
-            img.style.minHeight = '500px'; // Added to ensure minimum size
-            img.style.minWidth = '500px'; // Added to ensure minimum size
-            img.style.objectFit = 'contain';
-            img.style.aspectRatio = '1 / 1';
-            img.style.transform = 'none';
-            img.style.scale = '1';
-            
-            // Center the logo better
-            const logoContainer = img.parentElement;
-            if (logoContainer) {
-              logoContainer.style.display = 'flex';
-              logoContainer.style.justifyContent = 'center';
-              logoContainer.style.alignItems = 'center';
-              logoContainer.style.minHeight = '500px';
-            }
-          }
-        });
+        // Fix logo spacing
+        const logoContainer = clone.querySelector('.logo-container') as HTMLElement;
+        if (logoContainer) {
+          logoContainer.style.margin = '0';
+          logoContainer.style.padding = '0';
+        }
+        
+        // Fix Image height to match preview
+        const logoImage = clone.querySelector('img') as HTMLImageElement;
+        if (logoImage) {
+          logoImage.style.height = '200px';
+          logoImage.style.maxHeight = '200px';
+          logoImage.style.marginTop = '0';
+          logoImage.style.marginBottom = '0';
+        }
+        
+        // Ensure divider has proper spacing
+        const divider = clone.querySelector('hr') as HTMLElement;
+        if (divider) {
+          divider.style.marginTop = '4px';
+          divider.style.marginBottom = '4px';
+        }
+        
+        // Ensure table header has proper spacing
+        const tableHeader = clone.querySelector('.timetable-header') as HTMLElement;
+        if (tableHeader) {
+          tableHeader.style.paddingTop = '8px';
+        }
         
         tempDiv.appendChild(clone);
         
@@ -250,16 +249,11 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
             const contentHeight = Math.min(img.height, infoScreenHeight);
             const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
             
-            // Preserve aspect ratio when drawing the image
-            const aspectRatio = img.width / img.height;
-            const drawWidth = infoScreenWidth;
-            const drawHeight = drawWidth / aspectRatio;
-            
             // Draw the image centered on the canvas
-            ctx.drawImage(img, 0, yPos, drawWidth, drawHeight);
+            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
             
             // Create download link
-            const finalDataUrl = canvas.toDataURL('image/jpeg', 0.95); // Increased quality to 95%
+            const finalDataUrl = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG format with 90% quality
             const link = document.createElement('a');
             link.download = `timetable-${data.session.toLowerCase()}-${data.date}.jpg`;
             link.href = finalDataUrl;
