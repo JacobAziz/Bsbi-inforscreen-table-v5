@@ -1,6 +1,6 @@
 'use client';
 
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useRef, useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -9,6 +9,7 @@ import {
   Grid,
   GridItem,
   Divider,
+  Image,
 } from '@chakra-ui/react';
 import { TimetableData } from '@/types/timetable';
 import { BSBILogo } from './BSBILogo';
@@ -57,6 +58,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
   ({ data }, ref) => {
     const colors = getSessionColors(data.session);
     const isLightBackground = data.session === 'Noon';
+    const [logoError, setLogoError] = useState(false);
     
     // Format date from YYYY-MM-DD to DD-MM-YYYY
     const formattedDate = data.date ? 
@@ -72,21 +74,41 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         borderRadius="lg"
         width="100%"
         maxW="1200px"
-        overflow="hidden"
+        height="auto"
+        display="flex"
+        flexDirection="column"
+        className="timetable-container"
       >
         {/* Header section with date, logo, session info */}
-        <Box py={4} px={8}>
+        <Box py={1} px={8} mb={-2}>
           <Flex justify="space-between" align="center">
             {/* Left - Date */}
-            <Box textAlign="left" width="25%">
+            <Flex direction="column" textAlign="left" width="25%">
               <Text fontSize="3xl" fontWeight="bold">
+                Date
+              </Text>
+              <Text fontSize="2xl">
                 {formattedDate}
               </Text>
-            </Box>
+            </Flex>
             
             {/* Center - Logo */}
-            <Center width="50%">
-              <BSBILogo isLightBackground={isLightBackground} />
+            <Center width="50%" my={-4} position="relative" zIndex={1} overflow="visible">
+              {logoError ? (
+                <Text fontSize="5xl" fontWeight="bold" color="white">
+                  BSBI
+                </Text>
+              ) : (
+                <Image 
+                  src="/images/BSBI-Logo.png" 
+                  alt="BSBI Logo" 
+                  height={["170px", "230px", "300px"]} 
+                  width="auto"
+                  objectFit="contain"
+                  filter={isLightBackground ? "none" : "brightness(0) invert(1)"}
+                  onError={() => setLogoError(true)}
+                />
+              )}
             </Center>
             
             {/* Right - Session info */}
@@ -102,7 +124,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         </Box>
         
         {/* Horizontal divider between header and table */}
-        <Box px={6}>
+        <Box px={6} my={0}>
           <Divider 
             borderWidth="2px" 
             borderColor={isLightBackground ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)"} 
@@ -111,7 +133,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
         </Box>
 
         {/* Timetable section */}
-        <Box px={6} pb={6} pt={4}>
+        <Box px={6} pb={6} pt={0}>
           {/* Header Row */}
           <Grid 
             templateColumns={gridTemplateColumns}
@@ -124,16 +146,16 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
             p={0}
             mb={0}
           >
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
               Program
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
               Module
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
               Intake
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
               Professor
             </GridItem>
             <GridItem p={4} textAlign="center" whiteSpace="nowrap">
@@ -152,16 +174,16 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
               borderBottomRadius={index === data.rows.length - 1 ? "md" : 0}
               borderTop={index > 0 ? "none" : undefined}
             >
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
                 {row.program}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
                 {row.module}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
                 {row.intake}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="left">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
                 {row.professor}
               </GridItem>
               <GridItem p={4} textAlign="center">

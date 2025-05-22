@@ -1,41 +1,55 @@
 'use client';
 
 import { Box, Image, Flex, Text } from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface BSBILogoProps {
   isLightBackground?: boolean;
 }
 
 export const BSBILogo = ({ isLightBackground = false }: BSBILogoProps) => {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <Flex 
       direction="column"
       justifyContent="center" 
       alignItems="center"
-      height={["130px", "180px", "240px"]}
+      height={["160px", "220px", "260px"]}
+      py={0}
+      position="relative"
+      zIndex={2}
+      width="100%"
     >
-      <Box position="relative">
-        <Image 
-          src="/images/BSBI-Logo.png" 
-          alt="BSBI Logo" 
-          height={["80px", "120px", "160px"]} 
-          width="auto"
-          objectFit="contain"
-          filter={isLightBackground ? "none" : "brightness(0) invert(1)"}
-        />
-        <Text
-          fontSize={["5px", "7px", "9px"]}
-          fontWeight="medium"
-          color={isLightBackground ? "black" : "white"}
-          textAlign="center"
-          position="absolute"
-          left="50%"
-          top="70%"
-          transform="translateX(-29.5%)"
-          whiteSpace="nowrap"
-        >
-          Berlin School of Business & Innovation
-        </Text>
+      <Box 
+        position="relative" 
+        display="flex" 
+        justifyContent="center" 
+        alignItems="center"
+        minHeight={["130px", "180px", "220px"]}
+        width="100%"
+      >
+        {imageError ? (
+          <Text 
+            fontSize={["36px", "48px", "64px"]} 
+            fontWeight="bold" 
+            color={isLightBackground ? "black" : "white"}
+            textAlign="center"
+          >
+            BSBI
+          </Text>
+        ) : (
+          <Image 
+            src="/images/BSBI-Logo.png" 
+            alt="BSBI Logo" 
+            height={["170px", "230px", "300px"]} 
+            width="auto"
+            objectFit="contain"
+            filter={isLightBackground ? "none" : "brightness(0) invert(1)"}
+            onError={() => setImageError(true)}
+            display="block"
+          />
+        )}
       </Box>
     </Flex>
   );

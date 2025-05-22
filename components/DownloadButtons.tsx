@@ -17,31 +17,108 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
   data,
 }) => {
   const toast = useToast();
-  const [isDownloading, setIsDownloading] = useState<'png' | 'pdf' | 'excel' | null>(null);
+  const [isDownloading, setIsDownloading] = useState<'png' | 'pdf' | 'excel' | 'jpg' | null>(null);
 
   const downloadAsPNG = async () => {
     if (!timetableRef.current) return;
     
     setIsDownloading('png');
     try {
-      const dataUrl = await toPng(timetableRef.current, {
-        quality: 1.0,
-        pixelRatio: 2,
-        cacheBust: true,
-        imagePlaceholder: '/images/BSBI-Logo.png',
-        fetchRequestInit: { cache: 'no-cache' },
-      });
+      // Info screen dimensions (portrait mode)
+      const infoScreenWidth = 1080;
+      const infoScreenHeight = 1920;
       
-      const link = document.createElement('a');
-      link.download = `timetable-${data.session.toLowerCase()}-${data.date}.png`;
-      link.href = dataUrl;
-      link.click();
-
-      toast({
-        title: 'PNG downloaded successfully',
-        status: 'success',
-        duration: 3000,
-      });
+      // Create a temporary div to hold a clone of the timetable for export
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.width = `${infoScreenWidth}px`;
+      document.body.appendChild(tempDiv);
+      
+      // Clone the timetable content
+      if (timetableRef.current) {
+        const clone = timetableRef.current.cloneNode(true) as HTMLElement;
+        
+        // Apply styles for the export
+        clone.style.width = `${infoScreenWidth}px`;
+        clone.style.height = 'auto';
+        clone.style.overflow = 'visible';
+        clone.style.backgroundColor = getBackgroundColor(data.session);
+        
+        tempDiv.appendChild(clone);
+        
+        // Capture the image with exact dimensions
+        const dataUrl = await toPng(clone, {
+          quality: 1.0,
+          pixelRatio: 2,
+          width: infoScreenWidth,
+          height: clone.offsetHeight > infoScreenHeight ? clone.offsetHeight : infoScreenHeight,
+          cacheBust: true,
+          skipAutoScale: true,
+          style: {
+            margin: '0',
+            padding: '0',
+          }
+        });
+        
+        // Create a canvas for the final image with proper aspect ratio
+        const canvas = document.createElement('canvas');
+        canvas.width = infoScreenWidth;
+        canvas.height = infoScreenHeight;
+        
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          // Fill background
+          ctx.fillStyle = getBackgroundColor(data.session);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Load the captured image
+          const img = new Image();
+          img.onload = () => {
+            // Calculate positioning to center the content vertically
+            const contentHeight = Math.min(img.height, infoScreenHeight);
+            const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
+            
+            // Draw the image centered on the canvas
+            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
+            
+            // Create download link
+            const finalDataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `timetable-${data.session.toLowerCase()}-${data.date}.png`;
+            link.href = finalDataUrl;
+            link.click();
+            
+            // Cleanup
+            document.body.removeChild(tempDiv);
+            
+            toast({
+              title: 'PNG downloaded successfully',
+              description: 'Image sized to 1080x1920 for info screens',
+              status: 'success',
+              duration: 3000,
+            });
+            
+            setIsDownloading(null);
+          };
+          
+          img.onerror = () => {
+            document.body.removeChild(tempDiv);
+            toast({
+              title: 'Error creating PNG',
+              description: 'Failed to process the image',
+              status: 'error',
+              duration: 5000,
+            });
+            setIsDownloading(null);
+          };
+          
+          img.src = dataUrl;
+        } else {
+          throw new Error('Could not get canvas context');
+        }
+      }
     } catch (error) {
       toast({
         title: 'Error downloading PNG',
@@ -49,8 +126,132 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         status: 'error',
         duration: 5000,
       });
-    } finally {
       setIsDownloading(null);
+    }
+  };
+
+  const downloadAsJPG = async () => {
+    if (!timetableRef.current) return;
+    
+    setIsDownloading('jpg');
+    try {
+      // Info screen dimensions (portrait mode)
+      const infoScreenWidth = 1080;
+      const infoScreenHeight = 1920;
+      
+      // Create a temporary div to hold a clone of the timetable for export
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.width = `${infoScreenWidth}px`;
+      document.body.appendChild(tempDiv);
+      
+      // Clone the timetable content
+      if (timetableRef.current) {
+        const clone = timetableRef.current.cloneNode(true) as HTMLElement;
+        
+        // Apply styles for the export
+        clone.style.width = `${infoScreenWidth}px`;
+        clone.style.height = 'auto';
+        clone.style.overflow = 'visible';
+        clone.style.backgroundColor = getBackgroundColor(data.session);
+        
+        tempDiv.appendChild(clone);
+        
+        // Capture the image with exact dimensions
+        const dataUrl = await toPng(clone, {
+          quality: 1.0,
+          pixelRatio: 2,
+          width: infoScreenWidth,
+          height: clone.offsetHeight > infoScreenHeight ? clone.offsetHeight : infoScreenHeight,
+          cacheBust: true,
+          skipAutoScale: true,
+          style: {
+            margin: '0',
+            padding: '0',
+          }
+        });
+        
+        // Create a canvas for the final image with proper aspect ratio
+        const canvas = document.createElement('canvas');
+        canvas.width = infoScreenWidth;
+        canvas.height = infoScreenHeight;
+        
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          // Fill background
+          ctx.fillStyle = getBackgroundColor(data.session);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Load the captured image
+          const img = new Image();
+          img.onload = () => {
+            // Calculate positioning to center the content vertically
+            const contentHeight = Math.min(img.height, infoScreenHeight);
+            const yPos = Math.max(0, (infoScreenHeight - contentHeight) / 2);
+            
+            // Draw the image centered on the canvas
+            ctx.drawImage(img, 0, yPos, infoScreenWidth, contentHeight);
+            
+            // Create download link
+            const finalDataUrl = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG format with 90% quality
+            const link = document.createElement('a');
+            link.download = `timetable-${data.session.toLowerCase()}-${data.date}.jpg`;
+            link.href = finalDataUrl;
+            link.click();
+            
+            // Cleanup
+            document.body.removeChild(tempDiv);
+            
+            toast({
+              title: 'JPG downloaded successfully',
+              description: 'Image sized to 1080x1920 for info screens',
+              status: 'success',
+              duration: 3000,
+            });
+            
+            setIsDownloading(null);
+          };
+          
+          img.onerror = () => {
+            document.body.removeChild(tempDiv);
+            toast({
+              title: 'Error creating JPG',
+              description: 'Failed to process the image',
+              status: 'error',
+              duration: 5000,
+            });
+            setIsDownloading(null);
+          };
+          
+          img.src = dataUrl;
+        } else {
+          throw new Error('Could not get canvas context');
+        }
+      }
+    } catch (error) {
+      toast({
+        title: 'Error downloading JPG',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        status: 'error',
+        duration: 5000,
+      });
+      setIsDownloading(null);
+    }
+  };
+
+  // Helper function to get the background color based on session
+  const getBackgroundColor = (session: string): string => {
+    switch (session) {
+      case 'Morning':
+        return '#4a7fcb'; // Morning blue
+      case 'Noon':
+        return '#F7B32B'; // Noon yellow
+      case 'Afternoon':
+        return '#1A365D'; // Afternoon dark blue
+      default:
+        return '#4a7fcb'; // Default to morning blue
     }
   };
 
@@ -181,6 +382,14 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
           loadingText="Downloading"
         >
           Download PNG
+        </Button>
+        <Button 
+          colorScheme="purple" 
+          onClick={downloadAsJPG}
+          isLoading={isDownloading === 'jpg'}
+          loadingText="Downloading"
+        >
+          Download JPG
         </Button>
         <Button 
           colorScheme="green" 
