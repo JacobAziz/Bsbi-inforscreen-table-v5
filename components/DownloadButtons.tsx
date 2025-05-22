@@ -46,17 +46,31 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
-        // Fix for logo aspect ratio preservation
+        // Fix for logo aspect ratio preservation with increased size
         const logoImgs = clone.querySelectorAll('img');
         logoImgs.forEach(img => {
-          img.style.width = 'auto';
-          img.style.height = 'auto';
-          img.style.maxHeight = '300px';
-          img.style.maxWidth = '300px';
-          img.style.objectFit = 'contain';
-          img.style.aspectRatio = '1 / 1';
-          img.style.transform = 'none';
-          img.style.scale = '1';
+          // Target logo specifically
+          if (img.src.includes('BSBI-Logo')) {
+            img.style.width = '500px'; // Increased from auto
+            img.style.height = '500px'; // Increased from auto
+            img.style.maxHeight = '500px'; // Increased from 300px
+            img.style.maxWidth = '500px'; // Increased from 300px
+            img.style.minHeight = '500px'; // Added to ensure minimum size
+            img.style.minWidth = '500px'; // Added to ensure minimum size
+            img.style.objectFit = 'contain';
+            img.style.aspectRatio = '1 / 1';
+            img.style.transform = 'none';
+            img.style.scale = '1';
+            
+            // Center the logo better
+            const logoContainer = img.parentElement;
+            if (logoContainer) {
+              logoContainer.style.display = 'flex';
+              logoContainer.style.justifyContent = 'center';
+              logoContainer.style.alignItems = 'center';
+              logoContainer.style.minHeight = '500px';
+            }
+          }
         });
         
         tempDiv.appendChild(clone);
@@ -175,17 +189,31 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         clone.style.overflow = 'visible';
         clone.style.backgroundColor = getBackgroundColor(data.session);
         
-        // Fix for logo aspect ratio preservation
+        // Fix for logo aspect ratio preservation with increased size
         const logoImgs = clone.querySelectorAll('img');
         logoImgs.forEach(img => {
-          img.style.width = 'auto';
-          img.style.height = 'auto';
-          img.style.maxHeight = '300px';
-          img.style.maxWidth = '300px';
-          img.style.objectFit = 'contain';
-          img.style.aspectRatio = '1 / 1';
-          img.style.transform = 'none';
-          img.style.scale = '1';
+          // Target logo specifically
+          if (img.src.includes('BSBI-Logo')) {
+            img.style.width = '500px'; // Increased from auto
+            img.style.height = '500px'; // Increased from auto
+            img.style.maxHeight = '500px'; // Increased from 300px
+            img.style.maxWidth = '500px'; // Increased from 300px
+            img.style.minHeight = '500px'; // Added to ensure minimum size
+            img.style.minWidth = '500px'; // Added to ensure minimum size
+            img.style.objectFit = 'contain';
+            img.style.aspectRatio = '1 / 1';
+            img.style.transform = 'none';
+            img.style.scale = '1';
+            
+            // Center the logo better
+            const logoContainer = img.parentElement;
+            if (logoContainer) {
+              logoContainer.style.display = 'flex';
+              logoContainer.style.justifyContent = 'center';
+              logoContainer.style.alignItems = 'center';
+              logoContainer.style.minHeight = '500px';
+            }
+          }
         });
         
         tempDiv.appendChild(clone);
