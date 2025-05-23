@@ -52,7 +52,7 @@ const getSessionColors = (session: string) => {
 };
 
 // Grid template columns for the timetable - adjusted to give more space to Intake
-const gridTemplateColumns = "24% 24% 12% 24% 16%";
+const gridTemplateColumns = "27% 27% 12% 24% 10%";
 
 export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps>(
   ({ data }, ref) => {
@@ -147,19 +147,19 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
             mb={0}
             className="timetable-header"
           >
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="2xl" fontWeight="bold" whiteSpace="nowrap">
               Program
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="2xl" fontWeight="bold" whiteSpace="nowrap">
               Module
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="2xl" fontWeight="bold" whiteSpace="nowrap">
               Intake
             </GridItem>
-            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center" whiteSpace="nowrap">
+            <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="2xl" fontWeight="bold" whiteSpace="nowrap">
               Professor
             </GridItem>
-            <GridItem p={4} textAlign="center" whiteSpace="nowrap">
+            <GridItem p={4} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="2xl" fontWeight="bold" whiteSpace="nowrap">
               Room
             </GridItem>
           </Grid>
@@ -175,19 +175,19 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
               borderBottomRadius={index === data.rows.length - 1 ? "md" : 0}
               borderTop={index > 0 ? "none" : undefined}
             >
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="xl" fontWeight="semibold">
                 {row.program}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="xl" fontWeight="semibold">
                 {row.module}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="xl" fontWeight="semibold">
                 {row.intake}
               </GridItem>
-              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} textAlign="center">
+              <GridItem p={4} borderRight="2px solid" borderColor={colors.bg} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="xl" fontWeight="semibold">
                 {row.professor}
               </GridItem>
-              <GridItem p={4} textAlign="center">
+              <GridItem p={4} display="flex" alignItems="center" justifyContent="center" textAlign="center" fontSize="xl" fontWeight="semibold">
                 {row.room}
               </GridItem>
             </Grid>
