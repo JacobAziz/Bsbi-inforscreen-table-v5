@@ -1,6 +1,11 @@
 {
   "version": 2,
-  "regions": ["fra1"],
+  "regions": ["iad1"],
+  "functions": {
+    "app/**/*.{js,ts,tsx}": {
+      "maxDuration": 10
+    }
+  },
   "github": {
     "silent": true
   },

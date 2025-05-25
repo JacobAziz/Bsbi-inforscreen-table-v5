@@ -60,9 +60,9 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
     const isLightBackground = data.session === 'Noon';
     const [logoError, setLogoError] = useState(false);
     
-    // Format date from YYYY-MM-DD to DD-MM-YYYY
+    // Format date from YYYY-MM-DD to DD.MM.YYYY
     const formattedDate = data.date ? 
-      data.date.split('-').reverse().join('-') : 
+      data.date.split('-').reverse().join('.') : 
       '';
 
     return (

@@ -1,109 +1,157 @@
-# BSBI Timetable Formatter
+# BSBI Timetable Formatter V4 🎓
 
-A web application that transforms raw Excel timetables from the BSBI school system into clean, presentable sheets for info screens. Built with Next.js and optimized for Vercel deployment.
+A Next.js web application that transforms raw Excel timetables from BSBI school into clean, formatted displays optimized for information screens.
 
-## Features
+## 🚀 Features
 
-- Upload raw Excel timetables
-- Automatic data extraction and formatting
-- Session-based color themes (Morning, Noon, Afternoon)
-- Download formatted timetables as:
-  - PDF (for printing)
-  - PNG (for info screens)
-  - Excel (for editing)
+- **📊 Excel File Processing**: Import raw BSBI Excel files or previously exported files
+- **🎨 Session-Based Theming**: Morning (Blue), Noon (Yellow), Afternoon (Dark Blue)
+- **📱 Info Screen Optimization**: 1080x1920 portrait display ready
+- **📥 High-Quality Exports**: JPG, PDF, and Excel downloads
+- **🎯 Professional Layout**: Clean grid structure with BSBI branding
 
-## Special Case Handling
+## 🛠️ Tech Stack
 
-The application includes special handling for various course format patterns:
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **UI Library**: Chakra UI
+- **File Processing**: xlsx library for Excel parsing
+- **Export**: html-to-image, pdf-lib for high-quality downloads
+- **Deployment**: Vercel (optimized for free tier)
 
-- DBA courses - Uses placeholder values and specialized formatting
-- Global MBA programs - Extracts "Global MBA" as program and "Project Management" as module
-- "Pathway One-Strategic Leadership" pattern recognition
-- "Cross-cultural Management" with proper hyphenation
-- English for Academic Purposes courses - Truncates the extended title
-- F-Y1-T1/F-Y1-T2 prefixes - Removes these from module names
-- Special parentheses handling in professor names
-
-## Tech Stack
-
-- Next.js (React)
-- TypeScript
-- Chakra UI
-- XLSX (SheetJS)
-- pdf-lib
-- html-to-image
-
-## Getting Started
+## 🏃‍♂️ Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ and npm
+- Node.js 18+ 
+- npm or yarn
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone [your-repo-url]
-cd info-scrn-proj
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/JacobAziz/BSBI-Inforscreen-Table-V4.git
+   cd BSBI-Inforscreen-Table-V4
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
+
+## 📋 Usage
+
+### Step 1: Upload Excel File
+- Upload your BSBI timetable Excel file
+- Supports both raw BSBI format and previously exported files
+
+### Step 2: Configure Session
+- Select session type (Morning/Noon/Afternoon)
+- Set time and date for the timetable
+
+### Step 3: Preview & Download
+- Review the formatted timetable
+- Download as JPG, PDF, or Excel format
+
+## 🎨 Session Themes
+
+| Session | Background Color | Text Color | Use Case |
+|---------|------------------|------------|----------|
+| Morning | Blue (#4a7fcb) | White | Early classes |
+| Noon | Yellow (#F7B32B) | Black | Midday sessions |
+| Afternoon | Dark Blue (#1A365D) | White | Evening classes |
+
+## 📁 Project Structure
+
+```
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Main application page
+│   ├── layout.tsx         # Root layout
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── FileUpload.tsx     # Excel file upload
+│   ├── SessionSelector.tsx # Session configuration
+│   ├── TimetablePreview.tsx # Timetable display
+│   ├── DownloadButtons.tsx # Export functionality
+│   └── BSBILogo.tsx       # BSBI logo component
+├── lib/                   # Utility functions
+│   └── parseExcel.ts      # Excel parsing logic
+├── types/                 # TypeScript definitions
+│   └── timetable.d.ts     # Timetable types
+└── public/               # Static assets
+    └── bsbi-logo.png     # BSBI logo
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+## 🚀 Deployment
 
-3. Start the development server:
-```bash
-npm run dev
-```
+### Vercel Deployment
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+1. **Connect to Vercel**
+   ```bash
+   npx vercel
+   ```
 
-## Usage
+2. **Configure for Free Tier**
+   - Single region deployment (iad1)
+   - Optimized function duration (10s max)
 
-1. Click "Upload" or drag-and-drop an Excel file
-2. Select session (Morning/Noon/Afternoon)
-3. Enter the date
-4. Preview the formatted timetable
-5. Download in your preferred format
+3. **Environment Variables**
+   - No environment variables required for basic functionality
 
-## Development
+## 🔧 Development
 
-### Project Structure
+### Available Scripts
 
-```plaintext
-info-scrn-proj/
-├── public/                  # Static assets
-├── src/
-│   ├── components/         # React components
-│   ├── lib/               # Utility functions
-│   ├── pages/             # Next.js pages
-│   ├── styles/            # CSS styles
-│   └── types/             # TypeScript types
-```
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-### Building for Production
+### Key Components
 
-```bash
-npm run build
-```
+- **FileUpload**: Handles Excel file processing and validation
+- **SessionSelector**: Manages session type, time, and date selection
+- **TimetablePreview**: Renders the formatted timetable with proper styling
+- **DownloadButtons**: Handles high-quality JPG, PDF, and Excel exports
 
-## Deployment
+## 📊 Export Quality Features
 
-This project is optimized for Vercel deployment. Simply push to your GitHub repository and connect it to Vercel for automatic deployments.
+- **Resolution**: 1080x2400 pixels (portrait)
+- **Quality**: 100% JPEG quality with 2x pixel ratio
+- **Row Coloring**: Alternating white/light gray pattern
+- **Professional Output**: Ready for info screen display
 
-### Environment Variables
+## 🎯 Proof of Concept Status
 
-No environment variables are required for the basic setup.
+✅ **Core Functionality**: Excel import, session theming, preview, exports  
+✅ **High-Quality Downloads**: JPG, PDF, Excel working perfectly  
+✅ **Responsive Design**: Optimized for info screens  
+✅ **Vercel Ready**: Configured for free tier deployment  
 
-## Contributing
+## 🔄 Future Enhancements
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- User authentication system
+- Backend database integration
+- Batch processing capabilities
+- Custom color scheme options
+- Advanced template customization
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is developed for BSBI school internal use.
+
+## 🤝 Contributing
+
+This is a proof of concept for BSBI school. For contributions or issues, please contact the development team.
+
+---
+
+**Built with ❤️ for BSBI School Information Screens** 
