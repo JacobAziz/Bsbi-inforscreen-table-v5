@@ -26,6 +26,7 @@ const getSessionColors = (session: string) => {
         text: 'sessions.morning.text',
         evenRow: 'rgba(255, 255, 255, 0.9)',
         oddRow: 'rgba(220, 220, 220, 0.9)',
+        dataText: '#4a7fcb', // Logo columns color
       };
     case 'Noon':
       return { 
@@ -33,6 +34,7 @@ const getSessionColors = (session: string) => {
         text: 'sessions.noon.text',
         evenRow: 'rgba(255, 255, 255, 0.9)',
         oddRow: 'rgba(220, 220, 220, 0.9)',
+        dataText: '#2d4d7c', // Logo circle color
       };
     case 'Afternoon':
       return { 
@@ -40,6 +42,7 @@ const getSessionColors = (session: string) => {
         text: 'sessions.afternoon.text',
         evenRow: 'rgba(255, 255, 255, 0.9)',
         oddRow: 'rgba(220, 220, 220, 0.9)',
+        dataText: '#1a365d', // Logo columns color
       };
     default:
       return { 
@@ -47,6 +50,7 @@ const getSessionColors = (session: string) => {
         text: 'white',
         evenRow: 'rgba(255, 255, 255, 0.9)',
         oddRow: 'rgba(220, 220, 220, 0.9)',
+        dataText: '#000000',
       };
   }
 };
@@ -170,7 +174,7 @@ export const TimetablePreview = forwardRef<HTMLDivElement, TimetablePreviewProps
               key={index}
               templateColumns={gridTemplateColumns}
               bg={index % 2 === 0 ? colors.evenRow : colors.oddRow}
-              color="black"
+              color={colors.dataText}
               p={0}
               borderBottomRadius={index === data.rows.length - 1 ? "md" : 0}
               borderTop={index > 0 ? "none" : undefined}

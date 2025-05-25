@@ -105,14 +105,14 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
           Array.from(row.children).forEach((child: any) => {
             child.style.setProperty('background-color', bgColor, 'important');
             child.style.setProperty('background', bgColor, 'important');
-            child.style.setProperty('color', '#000000', 'important');
+            child.style.setProperty('color', getDataTextColor(data.session), 'important');
             
             // Apply to text elements inside
             const textElements = child.querySelectorAll('*');
             textElements.forEach((textEl: any) => {
               textEl.style.setProperty('background-color', bgColor, 'important');
               textEl.style.setProperty('background', bgColor, 'important');
-              textEl.style.setProperty('color', '#000000', 'important');
+              textEl.style.setProperty('color', getDataTextColor(data.session), 'important');
             });
           });
         });
@@ -187,6 +187,20 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
         duration: 5000,
       });
       setIsDownloading(null);
+    }
+  };
+
+  // Helper function to get the text color for data cells based on session (logo colors)
+  const getDataTextColor = (session: string): string => {
+    switch (session) {
+      case 'Morning':
+        return '#4a7fcb'; // Logo columns color
+      case 'Noon':
+        return '#2d4d7c'; // Logo circle color
+      case 'Afternoon':
+        return '#1a365d'; // Logo columns color
+      default:
+        return '#000000';
     }
   };
 
@@ -290,14 +304,14 @@ export const DownloadButtons: React.FC<DownloadButtonsProps> = ({
           Array.from(row.children).forEach((child: any) => {
             child.style.setProperty('background-color', bgColor, 'important');
             child.style.setProperty('background', bgColor, 'important');
-            child.style.setProperty('color', '#000000', 'important');
+            child.style.setProperty('color', getDataTextColor(data.session), 'important');
             
             // Apply to text elements inside
             const textElements = child.querySelectorAll('*');
             textElements.forEach((textEl: any) => {
               textEl.style.setProperty('background-color', bgColor, 'important');
               textEl.style.setProperty('background', bgColor, 'important');
-              textEl.style.setProperty('color', '#000000', 'important');
+              textEl.style.setProperty('color', getDataTextColor(data.session), 'important');
             });
           });
         });
